@@ -86,8 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($result != "") { ?>
     <div class="result">
         <strong><?php echo $result; ?></strong><br>
-        Confidence: <?php echo $percentage; ?>%<br>
-        Level: <?php echo $category; ?>
+        Percentage: <?php echo $percentage; ?>%<br>
     </div>
 <?php } ?>
 

@@ -30,10 +30,10 @@ percent = proba * 100
 
 # Map probability directly to output
 if percent <= 33:
-    result = f"No Burnout ({percent:.0f}%) - Manageable"
+    result = f"No Burnout "
 elif percent <= 66:
-    result = f"No Burnout ({percent:.0f}%) - Concerning"
+    result = f"No Burnout "
 else:
-    result = f"Burnout Detected ({percent:.0f}%) - Critical"
+    result = f"Burnout Detected "
 
 print(f"{percent:.0f}|{result}")

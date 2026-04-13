@@ -54,5 +54,6 @@ $current = basename($_SERVER['PHP_SELF']);
         <a href="dashboard.php" class="<?php echo ($current == 'dashboard.php') ? 'active' : ''; ?>">Dashboard</a>
         <a href="prediction.php" class="<?php echo ($current == 'prediction.php') ? 'active' : ''; ?>">Prediction</a>
         <a href="users.php" class="<?php echo ($current == 'users.php') ? 'active' : ''; ?>">Users</a>
+        <a href="logout.php">Logout</a>
     </div>
 </div>

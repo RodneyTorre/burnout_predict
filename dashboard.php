@@ -1,17 +1,30 @@
 <?php
 include 'db.php';
 
+$sql = "SELECT * FROM predictions ORDER BY created_at DESC";
+$result = $conn->query($sql);
+
 // TOTAL RECORDS
-$totalQuery = $conn->query("SELECT COUNT(*) as total FROM predictions");
+$totalQuery = $conn->query("
+SELECT COUNT(*) as total 
+FROM predictions");
 $totalData = $totalQuery->fetch_assoc();
 
 // BURNOUT COUNT
-$burnoutQuery = $conn->query("SELECT COUNT(*) as total FROM predictions WHERE result='Burnout Detected'");
-$burnoutData = $burnoutQuery->fetch_assoc();
+$burnoutQuery = $conn->query("
+    SELECT COUNT(*) as burnout_total 
+    FROM predictions 
+    WHERE LOWER(TRIM(result)) = 'burnout detected'
+");
+$burnoutData = $burnoutQuery ? $burnoutQuery->fetch_assoc() : ['burnout_total' => 0];
 
 // NO BURNOUT COUNT
-$normalQuery = $conn->query("SELECT COUNT(*) as total FROM predictions WHERE result='No Burnout'");
-$normalData = $normalQuery->fetch_assoc();
+$normalQuery = $conn->query("
+    SELECT COUNT(*) as normal_total 
+    FROM predictions 
+    WHERE LOWER(TRIM(result)) = 'no burnout'
+");
+$normalData = $normalQuery ? $normalQuery->fetch_assoc() : ['normal_total' => 0];
 
 // RECENT DATA
 ?>
@@ -26,88 +39,98 @@ $normalData = $normalQuery->fetch_assoc();
 <?php include 'header.php'; ?>
 <style>
 body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: #f5f4f2;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f6f8;
+    margin: 0;
     padding: 30px;
+    color: #333;
 }
 
-h1 {
-    margin-bottom: 20px;
+/* PAGE TITLE */
+h1, h2 {
+    font-weight: 600;
+    color: #222;
 }
 
+/* CARDS (optional match) */
 .cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    margin-bottom: 25px;
 }
 
 .card {
     background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
     padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
 .card h3 {
-    font-size: 14px;
+    font-size: 13px;
     color: #777;
+    margin-bottom: 10px;
 }
 
 .card h2 {
-    font-size: 28px;
-    margin-top: 10px;
+    font-size: 26px;
 }
 
+/* TABLE CONTAINER */
 .table {
-    margin-top: 30px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 15px;
-}
-
-table {
     width: 100%;
-    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 20px;
+    overflow-x: auto;
 }
 
-th, td {
-    padding: 10px;
-    text-align: left;
-    font-size: 14px;
+/* HEADER */
+thead {
+    background: #fafafa;
 }
 
 th {
-    color: #999;
-}
-
-tr:not(:last-child) {
-    border-bottom: 1px solid #eee;
-}
-
-.badge {
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-size: 12px;
+    text-align: left;
+    padding: 14px 12px;
+    font-size: 13px;
+    color: #555;
+    border-bottom: 1px solid #eaeaea;
     font-weight: 600;
 }
 
+/* ROWS */
+td {
+    padding: 12px;
+    font-size: 13px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+}
+
+/* HOVER */
+tr:hover {
+    background: #f9fafb;
+}
+
+/* BADGES */
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
 .burnout {
-    background: #ffe5e5;
-    color: #c53030;
+    background: #ffeaea;
+    color: #c0392b;
 }
 
 .normal {
-    background: #e6f9f0;
-    color: #2d9c6a;
-}
-.nav {
-    margin-bottom: 20px;
-}
-.nav a {
-    margin-right: 10px;
-    text-decoration: none;
-    font-weight: bold;
-    color: #f97b3d;
+    background: #eafaf1;
+    color: #1e8449;
 }
 </style>
 </head>
@@ -124,38 +147,60 @@ tr:not(:last-child) {
 
     <div class="card">
         <h3>Burnout Cases</h3>
-        <h2><?php echo $burnoutData['total']; ?></h2>
+        <h2><?php echo $burnoutData['burnout_total']; ?></h2>
     </div>
 
     <div class="card">
         <h3>No Burnout</h3>
-        <h2><?php echo $normalData['total']; ?></h2>
+        <h2><?php echo $normalData['normal_total']; ?></h2>
     </div>
 </div>
 
-<div class="table">
-    <h3>Recent Predictions</h3>
+<h2>Prediction Records</h2>
 
-    <table>
+    <table border="1">
         <tr>
             <th>ID</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Job Role</th>
+            <th>Experience</th>
+            <th>Work Hours</th>
+            <th>Remote Ratio</th>
+            <th>Satisfaction</th>
+            <th>Stress</th>
+            <th>Percentage</th>
             <th>Result</th>
             <th>Date</th>
         </tr>
 
-        <?php while($row = $recent->fetch_assoc()) { ?>
+        <?php while($row = $result->fetch_assoc()): ?>
         <tr>
-            <td><?php echo $row['id']; ?></td>
+            <td><?= $row['prediction-id'] ?></td>  
+            <td><?= $row['age'] ?></td>
+            <td><?= $row['gender'] == 1 ? 'Male' : 'Female' ?></td>
             <td>
-                <span class="badge <?php echo ($row['result'] == 'Burnout Detected') ? 'burnout' : 'normal'; ?>">
-                    <?php echo $row['result']; ?>
-                </span>
+                <?php
+                    switch($row['job_role']){
+                        case 1: echo "Engineer"; break;
+                        case 3: echo "Manager"; break;
+                        case 0: echo "Analyst"; break;
+                        case 2: echo "HR"; break;
+                        case 4: echo "Sales"; break;
+                    }
+                ?>
             </td>
-            <td><?php echo $row['created_at']; ?></td>
+            <td><?= $row['experience'] ?></td>
+            <td><?= $row['work_hours'] ?></td>
+            <td><?= $row['remote_ratio'] ?></td>
+            <td><?= $row['satisfaction'] ?></td>
+            <td><?= $row['stress'] ?></td>
+            <td><?= $row['percentage'] ?>%</td>
+            <td><?= $row['result'] ?></td>
+            <td><?= $row['created_at'] ?></td>
         </tr>
-        <?php } ?>
+        <?php endwhile; ?>
     </table>
-</div>
 
 </body>
 </html>
