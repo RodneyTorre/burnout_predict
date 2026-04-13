@@ -1,0 +1,68 @@
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #f5f4f2;
+    padding: 30px;
+}
+
+.container {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 800px;
+    margin: auto;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+input {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #d84040b7;
+}
+select {
+    padding: 12px;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #d84040b7;
+    background: white;
+}
+
+button {
+    margin-top: 20px;
+    padding: 13px;
+    width: 100%;
+    border: none;
+    background: linear-gradient(135deg, #e8400c, #f97b3d);
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.burnout { background: #ffe5e5; color: #c53030; }
+.normal { background: #e6f9f0; color: #2d9c6a; }
+
+.nav {
+    margin-bottom: 20px;
+}
+.nav a {
+    margin-right: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #f97b3d;
+}
